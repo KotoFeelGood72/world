@@ -2,12 +2,14 @@ import { defineStore } from 'pinia';
 
 interface ModalsState {
   burger: boolean;
+  search: boolean
 }
 
 export const useModalStore = defineStore('modal', {
   state: (): { modals: ModalsState } => ({
     modals: {
       burger: false,
+      search: false,
     },
   }),
   actions: {

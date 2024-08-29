@@ -46,5 +46,18 @@ export default defineNuxtConfig({
       // vue-toastification - old commonjs module 
       transpile: ['vue-toastification'],
   },
-  
+
+  runtimeConfig: {
+    public: {
+      BASE_URL: process.env.BASE_URL,
+      ACF_URL: process.env.ACF_URL,
+      COMMERCE_URL: process.env.COMMERCE_URL,
+      CONSUMER_KEY: process.env.CONSUMER_KEY,
+      CONSUMER_SECRET: process.env.CONSUMER_SECRET,
+      DOMAIN: process.env.DOMAIN
+    },
+  },
+  router: {
+    middleware: ['changeLoad']
+  }
 })

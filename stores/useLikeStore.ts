@@ -1,23 +1,18 @@
 import { defineStore, storeToRefs } from 'pinia';
 
-import type { ProductType } from '~/types/ProductTypes';
-
-interface LikeState {
-  likes: ProductType[];
-}
 
 export const useLikeStore = defineStore('likes', {
-  state: (): LikeState => ({
-    likes: [],
+  state: () => ({
+    likes: [] as any,
   }),
   actions: {
-    addLike(item: ProductType) {
-      if (!this.likes.find(like => like.id === item.id)) {
+    addLike(item: any) {
+      if (!this.likes.find((like: any) => like.id === item.id)) {
         this.likes.push(item);
       }
     },
-    removeLike(item: ProductType) {
-      this.likes = this.likes.filter(like => like.id !== item.id);
+    removeLike(item: any) {
+      this.likes = this.likes.filter((like: any) => like.id !== item.id);
     },
   },
  persist: true,

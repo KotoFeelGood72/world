@@ -1,24 +1,27 @@
 import { defineStore, storeToRefs } from 'pinia';
-import type { ProductType } from '~/types/ProductTypes';
-
-
-
-interface CartState {
-  carts: ProductType[];
-}
 
 export const useCartStore = defineStore('carts', {
-  state: (): CartState => ({
-    carts: [],
+  state: () => ({
+    carts: [] as any,
   }),
   actions: {
-    addCart(item: ProductType) {
-      if (!this.carts.find(cart => cart.id === item.id)) {
-        this.carts.push(item);
+    addCart(item: any) {
+      const existingCartItem = this.carts.find((cart: any) => cart.id === item.id);
+      if (existingCartItem) {
+        existingCartItem.quantity += 1;
+      } else {
+        this.carts.push({ ...item, quantity: 1 });
       }
     },
-    removeCart(item: ProductType) {
-      this.carts = this.carts.filter(cart => cart.id !== item.id);
+    removeCart(item: any) {
+      const existingCartItem = this.carts.find((cart: any) => cart.id === item.id);
+      if (existingCartItem) {
+        if (existingCartItem.quantity > 1) {
+          existingCartItem.quantity -= 1;
+        } else {
+          this.carts = this.carts.filter((cart: any) => cart.id !== item.id);
+        }
+      }
     },
   },
   persist: true,
