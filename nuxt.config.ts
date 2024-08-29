@@ -59,5 +59,9 @@ export default defineNuxtConfig({
   },
   router: {
     middleware: ['changeLoad']
-  }
+  },
+  server: {
+    port: 3000, // Укажите порт, если он отличается
+    host: '0.0.0.0', // Или 'localhost'
+  },
 })
