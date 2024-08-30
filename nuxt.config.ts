@@ -49,12 +49,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      BASE_URL: process.env.BASE_URL,
-      ACF_URL: process.env.ACF_URL,
-      COMMERCE_URL: process.env.COMMERCE_URL,
-      CONSUMER_KEY: process.env.CONSUMER_KEY,
-      CONSUMER_SECRET: process.env.CONSUMER_SECRET,
-      DOMAIN: process.env.DOMAIN
+      BASE_URL: 'https://api.artel-semchenko.ru/wp-json/wp/v2',
+      ACF_URL: 'https://api.artel-semchenko.ru/wp-json/acf/v3',
+      COMMERCE_URL: 'https://api.artel-semchenko.ru/wp-json/wc/v3',
+      CONSUMER_KEY: 'ck_a0388256b8c8fd94175fb1eb761dd8b31175b983',
+      CONSUMER_SECRET: 'cs_c513222cffe93f3ef13bb57160ff467195890c25',
+      DOMAIN: 'https://api.artel-semchenko.ru/'
     },
   },
   router: {
