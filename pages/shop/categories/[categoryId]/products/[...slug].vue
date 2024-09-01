@@ -4,7 +4,7 @@
 	<div class="single" v-if="product">
 		<div class="container">
 			<div class="single_main__w">
-				<div class="single_back">
+				<div class="single_back" @click="router.go(-1)">
 					<Icon name="teenyicons:arrow-left-outline" size="24" />
 					<p>Назад</p>
 				</div>
@@ -130,7 +130,7 @@
 	import { Swiper, SwiperSlide } from "swiper/vue";
 	import Button from "~/components/ui/Button.vue";
 	import Select from "~/components/ui/Select.vue";
-	import { useRoute } from "vue-router";
+	import { useRoute, useRouter } from "vue-router";
 	import { ref, computed, onMounted } from "vue";
 	import { useToast } from "vue-toastification";
 	import { useCartStore, useCartStoreRefs } from "~/stores/useCartStore";
@@ -143,6 +143,7 @@
 	const sizeModel = ref<any>(null);
 	const colorModel = ref<any>(null);
 	const route = useRoute();
+	const router = useRouter();
 	const toast = useToast();
 	const thumbsSwiper = ref(null);
 

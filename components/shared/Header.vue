@@ -80,6 +80,7 @@
 		transition: height 0.3s ease-in-out;
 		position: fixed;
 		z-index: 99;
+		background-color: $white;
 		@include bp($point_2, $direction: min) {
 			height: $header;
 		}
@@ -87,7 +88,6 @@
 			top: 0;
 			left: 0;
 			right: 0;
-			background-color: $white;
 			border-bottom: 0.1rem solid #8888883f;
 			@include bp($point_2, $direction: min) {
 				height: 10rem;
