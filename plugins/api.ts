@@ -14,6 +14,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         baseURL: config.public.DOMAIN
     })
 
+    const custom = axios.create({
+        baseURL: '/api/'
+    })
+
     const wooco = axios.create({
         baseURL: config.public.COMMERCE_URL,
         params: {
@@ -27,7 +31,8 @@ export default defineNuxtPlugin((nuxtApp) => {
             main: main,
             wooco: wooco,
             acf: acf,
-            domain: domain
+            domain: domain,
+            custom: custom
         }
     }
 
