@@ -114,9 +114,10 @@
           title="Вам также может понравиться"
           class="mb-18"
           style="text-align: center"
+          v-if="product.upsells"
         >
           <ProductsCard
-            v-for="(item, i) in product.upsell_products"
+            v-for="(item, i) in product.upsells"
             :key="'upsell-product-' + i"
             :data="item"
           />
