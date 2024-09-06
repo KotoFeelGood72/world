@@ -65,10 +65,17 @@ export default defineNuxtConfig({
     middleware: ["changeLoad"],
   },
   nitro: {
+    // Прокси работает как в разработке, так и в продакшене
     devProxy: {
       "/api/": {
         target: "https://api.artel-semchenko.ru/wp-content/uploads/json",
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+    routeRules: {
+      "/api/**": {
+        proxy: "https://api.artel-semchenko.ru/wp-content/uploads/json/**",
       },
     },
   },
