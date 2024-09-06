@@ -21,14 +21,14 @@ export const useProductStore = defineStore("products", {
       const { $wooco } = useNuxtApp();
       try {
         let url = "/filter-products";
-        
+
         // Проверяем, есть ли категория в URL
         if (catFromUrl) {
           url += `/categories/${catFromUrl}`;
         }
 
         const params: any = {};
-        
+
         // Если категории из URL нет, проверяем catId из query
         if (!catFromUrl) {
           if (Array.isArray(catId) && catId.length > 0) {
@@ -37,19 +37,19 @@ export const useProductStore = defineStore("products", {
             params.category = catId;
           }
         }
-        
+
         if (size) {
           params.size = String(size);
         }
-        
+
         if (color) {
           params.color = String(color);
         }
-        
+
         if (search) {
           params.search = search;
         }
-        
+
         if (orderby) {
           params.orderby = orderby;
           params.order = order;

@@ -2,7 +2,9 @@
 
 <template>
   <div class="products" v-if="data">
-    <NuxtLink :to="`/shop/categories/${data.category}/products/${data.slug}`">
+    <NuxtLink
+      :to="`/shop/categories/${data.category_id}/products/${data.slug}`"
+    >
       <div class="products_cardImg__w">
         <div
           class="products_like"
@@ -12,11 +14,11 @@
           <Icon name="ph:heart-light" size="26" />
         </div>
         <div class="products_card__img">
-          <img :src="`${data.image}`" />
+          <img :src="`${data.thumbnail}`" />
         </div>
       </div>
       <div class="products__content">
-        <h3>{{ data.name }}</h3>
+        <h3>{{ data.title }}</h3>
         <div class="price">{{ data.price }} ₽</div>
         <Button
           @click.prevent="toggleCart"
@@ -139,10 +141,21 @@ const toggleCart = () => {
 }
 
 .products__content {
+  width: 100%;
+  @include flex-center;
+  flex-direction: column;
   h3 {
     font-size: 2rem;
     font-weight: 300;
     margin-bottom: 1.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 2rem;
+    min-height: 4rem;
+    max-height: 4rem;
     @include bp($point_2) {
       font-size: 1.2rem;
     }

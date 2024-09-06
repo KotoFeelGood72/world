@@ -16,13 +16,13 @@
             >
               <div class="cart_item__left">
                 <div class="cart_item__img">
-                  <img :src="item.image" alt="" />
+                  <img :src="item.thumbnail" alt="" />
                 </div>
                 <div class="cart_item__content">
-                  <p>{{ item.name }}</p>
+                  <p>{{ item.title }}</p>
                   <ul>
                     <li
-                      v-for="char in item.default_attributes"
+                      v-for="char in getAttributes(item)"
                       :key="'attributes-item-' + char.id"
                     >
                       {{ char.name }}:
@@ -76,9 +76,7 @@
         <div class="cart_total" v-if="carts.length > 0">
           Сумма: {{ totalPrice }} ₽
         </div>
-        <div class="cart_pay" v-if="carts.length > 0">
-          <Button name="Перейти к оплате" />
-        </div>
+        <Payment :price="totalPrice" v-if="carts.length > 0" />
       </div>
     </div>
   </div>
@@ -90,6 +88,7 @@ import Button from "@/components/ui/Button.vue";
 import { useCartStoreRefs } from "~/stores/useCartStore";
 import Empty from "~/components/shared/Empty.vue";
 import { useGlobalStoreRefs } from "~/stores/useGlobalStore";
+import Payment from "~/components/shared/Payment.vue";
 const { load } = useGlobalStoreRefs();
 const { carts } = useCartStoreRefs();
 
@@ -105,6 +104,41 @@ const translateColor = (color: string): string => {
   };
 
   return colorTranslations[color.toLowerCase()] || color;
+};
+
+const getAttributes = (item: any) => {
+  if (item.default_attributes) {
+    return item.default_attributes.map((attr: any) => {
+      if (attr.name === "pa_size") {
+        return { ...attr, name: "Размер" };
+      } else if (attr.name === "pa_color") {
+        return { ...attr, name: "Цвет" };
+      }
+      return attr;
+    });
+  } else if (item.attributes) {
+    let attributesArray = [];
+
+    // Обрабатываем pa_size и pa_color
+    if (item.attributes.pa_size) {
+      attributesArray.push({
+        name: "Размер",
+        option: item.attributes.pa_size[0]?.name || "Не указано",
+        id: item.attributes.pa_size[0]?.id || null,
+      });
+    }
+
+    if (item.attributes.pa_color) {
+      attributesArray.push({
+        name: "Цвет",
+        option: item.attributes.pa_color[0]?.name || "Не указано",
+        id: item.attributes.pa_color[0]?.id || null,
+      });
+    }
+
+    return attributesArray;
+  }
+  return [];
 };
 
 const decrementQuantity = (index: number) => {

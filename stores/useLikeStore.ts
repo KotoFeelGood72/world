@@ -1,7 +1,6 @@
-import { defineStore, storeToRefs } from 'pinia';
+import { defineStore, storeToRefs } from "pinia";
 
-
-export const useLikeStore = defineStore('likes', {
+export const useLikeStore = defineStore("likes", {
   state: () => ({
     likes: [] as any,
   }),
@@ -15,7 +14,9 @@ export const useLikeStore = defineStore('likes', {
       this.likes = this.likes.filter((like: any) => like.id !== item.id);
     },
   },
- persist: true,
+  persist: {
+    storage: persistedState.localStorage,
+  },
 });
 
 export const useLikeStoreRefs = () => storeToRefs(useLikeStore());
