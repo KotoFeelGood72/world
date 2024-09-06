@@ -1,7 +1,7 @@
 <!-- @format -->
 
 <template>
-	<div class="home" v-if="main.options">
+	<div class="home" v-if="main.options || home">
 		<!-- <transition name="fade">
 			<Loader v-if="load" />
 		</transition> -->
@@ -9,12 +9,13 @@
 			<div class="container">
 				<div class="hero_main mb-18">
 					<div class="hero_content">
-						<h1>{{ main.home.hero_title }}</h1>
-						<p>{{ main.home.subtitle }}</p>
+
+						<h1>{{ home.hero_title }}</h1>
+						<p>{{ home.subtitle }}</p>
 						<Button name="В каталог" @click="router.push('/shop')" />
 					</div>
 					<div class="hero_img">
-						<img :src="main.home.main_img" alt="" />
+						<img :src="home.main_img" alt="" />
 					</div>
 				</div>
 			</div>
@@ -132,21 +133,29 @@
 	import Socials from "@/components/blocks/Socials.vue";
 	import Reviews from "@/components/blocks/Reviews.vue";
 	import CategoryCard from "@/components/card/CategoryCard.vue";
+	import axios from "axios";
 	// import Loader from "~/components/shared/Loader.vue";
 	import { useGlobalStore, useGlobalStoreRefs } from "~/stores/useGlobalStore";
 	import { useRouter } from "vue-router";
 
 	const router = useRouter();
 	const { getHome } = useGlobalStore();
+	const home = ref<any>(null)
 	// const { load } = useGlobalStoreRefs();
 
 	useHead({
 		title: "Главная",
 	});
 
-	const { main } = useGlobalStoreRefs();
+	const { main, } = useGlobalStoreRefs();
 	// const { getHome } = useGlobalStore();
 	const currentOpenId = ref<number | null>(null);
+
+	async function getPages() {
+		const {$custom} = useNuxtApp()
+		const response = await $custom.get('/uyutnyj-mir-vyazanyh-sokrovishh-najdi-svoyu-idealnuyu-veshh.json')
+		home.value = response.data.acf.content
+	}
 
 	const updateCurrentOpenId = (id: number | null) => {
 		currentOpenId.value = id;
@@ -154,6 +163,7 @@
 
 	onMounted(async () => {
 		await getHome();
+		await getPages();
 	});
 </script>
 

@@ -54,11 +54,20 @@ export default defineNuxtConfig({
       COMMERCE_URL: 'https://api.artel-semchenko.ru/wp-json/wc/v3',
       CONSUMER_KEY: 'ck_a0388256b8c8fd94175fb1eb761dd8b31175b983',
       CONSUMER_SECRET: 'cs_c513222cffe93f3ef13bb57160ff467195890c25',
-      DOMAIN: 'https://api.artel-semchenko.ru/'
+      DOMAIN: 'https://api.artel-semchenko.ru/',
+      CUSTOM_URL: 'https://api.artel-semchenko.ru/wp-content/uploads/json',
     },
   },
   router: {
     middleware: ['changeLoad']
+  },
+  nitro: {
+    devProxy: {
+        '/api/': {
+            target: 'https://api.artel-semchenko.ru/wp-content/uploads/json',
+            changeOrigin: true
+        }
+    }
   },
   server: {
     port: 3000, // Укажите порт, если он отличается
