@@ -28,7 +28,7 @@ export default defineNuxtConfig({
     customCollections: [
       {
         prefix: "custom",
-        dir: "./assets/icons",
+        dir: "assets/icons/",
       },
     ],
   },
@@ -65,17 +65,17 @@ export default defineNuxtConfig({
     middleware: ["changeLoad"],
   },
   nitro: {
-    // Прокси работает как в разработке, так и в продакшене
     devProxy: {
-      "/api/": {
+      "/api/json/": {
         target: "https://api.artel-semchenko.ru/wp-content/uploads/json",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        rewrite: (path) => path.replace(/^\/api\/json/, ""),
       },
     },
     routeRules: {
+      "/assets/icons/**": { static: true }, // Оставляем иконки статическими
       "/api/**": {
-        proxy: "https://api.artel-semchenko.ru/wp-content/uploads/json/**",
+        proxy: false, // Отключаем проксирование всех других запросов через /api/
       },
     },
   },
