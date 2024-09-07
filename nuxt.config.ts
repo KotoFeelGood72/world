@@ -66,16 +66,16 @@ export default defineNuxtConfig({
   },
   nitro: {
     devProxy: {
-      "/api/json/": {
-        target: "https://api.artel-semchenko.ru/wp-content/uploads/json",
+      "/json/": {
+        target: `${process.env.CUSTOM_URL}`,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/json/, ""),
       },
     },
     routeRules: {
-      "/assets/icons/**": { static: true },
-      "/api/**": {
-        proxy: false,
+      "/json/**": {
+        proxy: {
+          to: `${process.env.CUSTOM_URL}/**`,
+        },
       },
     },
   },

@@ -14,7 +14,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   });
 
   const custom = axios.create({
-    baseURL: "/api/json/",
+    baseURL: "/json/",
   });
 
   const wooco = axios.create({
