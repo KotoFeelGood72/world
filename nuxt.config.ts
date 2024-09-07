@@ -73,14 +73,14 @@ export default defineNuxtConfig({
       },
     },
     routeRules: {
-      "/assets/icons/**": { static: true }, // Оставляем иконки статическими
+      "/assets/icons/**": { static: true },
       "/api/**": {
-        proxy: false, // Отключаем проксирование всех других запросов через /api/
+        proxy: false,
       },
     },
   },
   server: {
-    port: 3000, // Укажите порт, если он отличается
-    host: "0.0.0.0", // Или 'localhost'
+    port: 3000,
+    host: "0.0.0.0",
   },
 });
