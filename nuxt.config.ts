@@ -67,18 +67,19 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       "/json/": {
-        target: `${process.env.CUSTOM_URL}`,
+        target: "https://api.artel-semchenko.ru/wp-content/uploads/json", // замените на фактический URL
         changeOrigin: true,
       },
     },
     routeRules: {
       "/json/**": {
         proxy: {
-          to: `${process.env.CUSTOM_URL}/**`,
+          to: "https://api.artel-semchenko.ru/wp-content/uploads/json/**", // замените на фактический URL
         },
       },
     },
   },
+
   server: {
     port: 3000,
     host: "0.0.0.0",
