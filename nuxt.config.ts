@@ -71,13 +71,13 @@ export default defineNuxtConfig({
         changeOrigin: true,
       },
     },
-    // routeRules: {
-    //   "/json/**": {
-    //     proxy: {
-    //       to: `${process.env.CUSTOM_URL}/**`,
-    //     },
-    //   },
-    // },
+    routeRules: {
+      "/json/**": {
+        proxy: {
+          to: `${process.env.CUSTOM_URL}/**`,
+        },
+      },
+    },
   },
   server: {
     port: 3000,
