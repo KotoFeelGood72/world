@@ -194,6 +194,7 @@ const validateForm = () => {
 };
 
 // Функция для создания заказа
+// Функция для создания заказа
 const submitOrder = async () => {
   if (!validateForm()) {
     toast("Пожалуйста, исправьте ошибки в форме");
@@ -205,35 +206,36 @@ const submitOrder = async () => {
   try {
     // Собираем данные для заказа и отправляем на сервер
     const orderData = {
-      payment_method:
-        paymentData.value.paymentMethod === "на сайте" ? "bacs" : "cod",
-      payment_method_title:
-        paymentData.value.paymentMethod === "на сайте"
-          ? "Оплата на сайте"
-          : "Оплата при получении",
-      set_paid: paymentData.value.paymentMethod === "на сайте",
+      payment_method: "custom", // Используем кастомный метод оплаты
+      payment_method_title: paymentData.value.paymentMethod, // Название способа оплаты
+      set_paid: false, // Заказ будет помечен как не оплаченный по умолчанию
+
       billing: {
         first_name: paymentData.value.name,
         address_1: paymentData.value.address,
         phone: paymentData.value.phone,
         email: paymentData.value.email,
       },
+
       shipping: {
         first_name: paymentData.value.name,
         address_1: paymentData.value.address,
       },
+
       line_items: carts.value.map((item: any) => ({
         product_id: item.id,
         quantity: item.quantity,
       })),
-      shipping_lines: [
+
+      // Добавляем кастомные метаданные для метода оплаты и доставки
+      meta_data: [
         {
-          method_id:
-            paymentData.value.deliveryMethod === "СДЕК"
-              ? "flat_rate"
-              : "free_shipping",
-          method_title: paymentData.value.deliveryMethod,
-          total: paymentData.value.deliveryMethod === "СДЕК" ? "300" : "0",
+          key: "delivery_method",
+          value: paymentData.value.deliveryMethod, // Кастомный метод доставки
+        },
+        {
+          key: "payment_method",
+          value: paymentData.value.paymentMethod, // Кастомный метод оплаты
         },
       ],
     };
