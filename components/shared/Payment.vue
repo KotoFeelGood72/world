@@ -195,6 +195,7 @@ const validateForm = () => {
 
 // Функция для создания заказа
 // Функция для создания заказа
+// Функция для создания заказа
 const submitOrder = async () => {
   if (!validateForm()) {
     toast("Пожалуйста, исправьте ошибки в форме");
@@ -204,11 +205,17 @@ const submitOrder = async () => {
   loading.value = true; // Устанавливаем лоадер
 
   try {
+    // Устанавливаем статус заказа в зависимости от метода оплаты
+    let orderStatus = "pending"; // Для оплаты при получении используем статус "в ожидании"
+    if (paymentData.value.paymentMethod === "на сайте") {
+      orderStatus = "processing"; // Если оплата на сайте, устанавливаем статус "обрабатывается"
+    }
+
     // Собираем данные для заказа и отправляем на сервер
     const orderData = {
       payment_method: "custom", // Используем кастомный метод оплаты
       payment_method_title: paymentData.value.paymentMethod, // Название способа оплаты
-      set_paid: false, // Заказ будет помечен как не оплаченный по умолчанию
+      set_paid: paymentData.value.paymentMethod === "на сайте", // Если оплата на сайте, считаем заказ оплаченным
 
       billing: {
         first_name: paymentData.value.name,
@@ -222,6 +229,8 @@ const submitOrder = async () => {
         address_1: paymentData.value.address,
       },
 
+      status: orderStatus, // Добавляем статус заказа
+
       line_items: carts.value.map((item: any) => ({
         product_id: item.id,
         quantity: item.quantity,
@@ -230,11 +239,11 @@ const submitOrder = async () => {
       // Добавляем кастомные метаданные для метода оплаты и доставки
       meta_data: [
         {
-          key: "delivery_method",
+          key: "Метод доставки",
           value: paymentData.value.deliveryMethod, // Кастомный метод доставки
         },
         {
-          key: "payment_method",
+          key: "Метод оплаты",
           value: paymentData.value.paymentMethod, // Кастомный метод оплаты
         },
       ],
