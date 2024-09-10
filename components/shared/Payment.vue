@@ -14,6 +14,7 @@
           <Inputs
             v-model="paymentData.phone"
             placeholder="Телефон"
+            @input="formatPhone"
             @blur="validatePhone"
           />
           <span v-if="errors.phone" class="error">{{ errors.phone }}</span>
@@ -21,6 +22,7 @@
           <Inputs
             v-model="paymentData.email"
             placeholder="Почта"
+            @input="formatEmail"
             @blur="validateEmail"
           />
           <span v-if="errors.email" class="error">{{ errors.email }}</span>
@@ -35,7 +37,45 @@
         <h4>Стоимость: {{ price }} руб.</h4>
       </div>
       <div class="payment__col">
-        <!-- Радио кнопки и опции доставки/оплаты -->
+        <h3>Способ доставки</h3>
+        <div class="payment__options first">
+          <input
+            id="sdek"
+            type="radio"
+            v-model="paymentData.deliveryMethod"
+            value="СДЕК"
+            name="delivery"
+          />
+          <label for="sdek"> СДЕК </label>
+          <input
+            id="mail"
+            type="radio"
+            name="delivery"
+            v-model="paymentData.deliveryMethod"
+            value="Почта"
+          />
+          <label for="mail"> Почта </label>
+        </div>
+
+        <h3>Способ оплаты:</h3>
+        <div class="payment__options">
+          <input
+            type="radio"
+            id="site"
+            v-model="paymentData.paymentMethod"
+            value="на сайте"
+            name="payment"
+          />
+          <label for="site"> на сайте </label>
+          <input
+            id="complete"
+            type="radio"
+            v-model="paymentData.paymentMethod"
+            name="payment"
+            value="при получении"
+          />
+          <label for="complete"> при получении </label>
+        </div>
       </div>
     </div>
 
@@ -94,6 +134,12 @@ const validateName = () => {
   }
 };
 
+// Форматирование телефона — разрешаем вводить только цифры
+const formatPhone = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  paymentData.value.phone = input.value.replace(/\D/g, ""); // Удаляем все символы, кроме цифр
+};
+
 const validatePhone = () => {
   const phone = paymentData.value.phone;
   if (!phone) {
@@ -104,6 +150,12 @@ const validatePhone = () => {
   } else {
     errors.value.phone = "";
   }
+};
+
+// Форматирование email — разрешаем только латинские буквы и допустимые символы для email
+const formatEmail = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  paymentData.value.email = input.value.replace(/[^a-zA-Z0-9@._-]/g, ""); // Удаляем все символы, кроме латинских букв, цифр и разрешённых символов
 };
 
 // Валидация email
