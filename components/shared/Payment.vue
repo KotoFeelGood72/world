@@ -4,59 +4,47 @@
       <div class="payment__col">
         <h3>Контактная информация</h3>
         <div class="payment__form">
-          <Inputs v-model="paymentData.name" placeholder="Имя" />
-          <Inputs v-model="paymentData.phone" placeholder="Телефон" />
-          <Inputs v-model="paymentData.email" placeholder="Почта" />
-          <Inputs v-model="paymentData.address" placeholder="Адрес" />
+          <Inputs
+            v-model="paymentData.name"
+            placeholder="Имя"
+            @blur="validateName"
+          />
+          <span v-if="errors.name" class="error">{{ errors.name }}</span>
+
+          <Inputs
+            v-model="paymentData.phone"
+            placeholder="Телефон"
+            @blur="validatePhone"
+          />
+          <span v-if="errors.phone" class="error">{{ errors.phone }}</span>
+
+          <Inputs
+            v-model="paymentData.email"
+            placeholder="Почта"
+            @blur="validateEmail"
+          />
+          <span v-if="errors.email" class="error">{{ errors.email }}</span>
+
+          <Inputs
+            v-model="paymentData.address"
+            placeholder="Адрес"
+            @blur="validateAddress"
+          />
+          <span v-if="errors.address" class="error">{{ errors.address }}</span>
         </div>
         <h4>Стоимость: {{ price }} руб.</h4>
       </div>
       <div class="payment__col">
-        <h3>Способ доставки</h3>
-        <div class="payment__options first">
-          <input
-            id="sdek"
-            type="radio"
-            v-model="paymentData.deliveryMethod"
-            value="СДЕК"
-            name="delivery"
-          />
-          <label for="sdek"> СДЕК </label>
-          <input
-            id="mail"
-            type="radio"
-            name="delivery"
-            v-model="paymentData.deliveryMethod"
-            value="Почта"
-          />
-          <label for="mail"> Почта </label>
-        </div>
-
-        <h3>Способ оплаты:</h3>
-        <div class="payment__options">
-          <input
-            type="radio"
-            id="site"
-            v-model="paymentData.paymentMethod"
-            value="на сайте"
-            name="payment"
-          />
-          <label for="site"> на сайте </label>
-          <input
-            id="complete"
-            type="radio"
-            v-model="paymentData.paymentMethod"
-            name="payment"
-            value="при получении"
-          />
-          <label for="complete"> при получении </label>
-        </div>
+        <!-- Радио кнопки и опции доставки/оплаты -->
       </div>
     </div>
 
     <div class="cart_pay" v-if="carts.length > 0" @click="submitOrder">
       <Button name="Перейти к оплате" />
     </div>
+
+    <!-- Отображаем лоадер во время отправки заказа -->
+    <Loader v-if="loading" />
   </div>
 </template>
 
@@ -67,13 +55,16 @@ import Button from "../ui/Button.vue";
 import { useCartStoreRefs } from "~/stores/useCartStore";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
+import Loader from "./Loader.vue";
+
+const props = defineProps<{
+  price: any;
+}>();
 
 const { carts } = useCartStoreRefs();
-
 const toast = useToast();
 const router = useRouter();
 
-// Моделируем данные формы оплаты
 const paymentData = ref({
   name: "",
   phone: "",
@@ -83,23 +74,92 @@ const paymentData = ref({
   paymentMethod: "на сайте",
 });
 
-// Входящие пропсы
-const props = defineProps<{
-  price: any;
-}>();
+// Ошибки валидации
+const errors = ref({
+  name: "",
+  phone: "",
+  email: "",
+  address: "",
+});
 
-// Функция для создания заказа в WooCommerce
+// Состояние загрузки
+const loading = ref(false);
+
+// Валидация имени
+const validateName = () => {
+  if (!paymentData.value.name) {
+    errors.value.name = "Имя обязательно для заполнения";
+  } else {
+    errors.value.name = "";
+  }
+};
+
+const validatePhone = () => {
+  const phone = paymentData.value.phone;
+  if (!phone) {
+    errors.value.phone = "Телефон обязателен для заполнения";
+  } else if (phone.length !== 11) {
+    errors.value.phone =
+      "Введите корректный номер телефона (должен содержать 11 цифр)";
+  } else {
+    errors.value.phone = "";
+  }
+};
+
+// Валидация email
+const validateEmail = () => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Пример паттерна для email
+  if (!paymentData.value.email) {
+    errors.value.email = "Почта обязательна для заполнения";
+  } else if (!emailPattern.test(paymentData.value.email)) {
+    errors.value.email = "Введите корректный адрес почты";
+  } else {
+    errors.value.email = "";
+  }
+};
+
+// Валидация адреса
+const validateAddress = () => {
+  if (!paymentData.value.address) {
+    errors.value.address = "Адрес обязателен для заполнения";
+  } else {
+    errors.value.address = "";
+  }
+};
+
+// Функция для проверки всей формы перед отправкой
+const validateForm = () => {
+  validateName();
+  validatePhone();
+  validateEmail();
+  validateAddress();
+  return (
+    !errors.value.name &&
+    !errors.value.phone &&
+    !errors.value.email &&
+    !errors.value.address
+  );
+};
+
+// Функция для создания заказа
 const submitOrder = async () => {
+  if (!validateForm()) {
+    toast("Пожалуйста, исправьте ошибки в форме");
+    return;
+  }
+
+  loading.value = true; // Устанавливаем лоадер
+
   try {
-    // Собираем все данные для заказа
+    // Собираем данные для заказа и отправляем на сервер
     const orderData = {
       payment_method:
-        paymentData.value.paymentMethod === "на сайте" ? "bacs" : "cod", // метод оплаты: 'bacs' - банковский перевод, 'cod' - оплата при получении
+        paymentData.value.paymentMethod === "на сайте" ? "bacs" : "cod",
       payment_method_title:
         paymentData.value.paymentMethod === "на сайте"
           ? "Оплата на сайте"
           : "Оплата при получении",
-      set_paid: paymentData.value.paymentMethod === "на сайте", // если 'true', значит заказ считается оплаченным
+      set_paid: paymentData.value.paymentMethod === "на сайте",
       billing: {
         first_name: paymentData.value.name,
         address_1: paymentData.value.address,
@@ -126,12 +186,9 @@ const submitOrder = async () => {
       ],
     };
 
-    // Отправляем данные на сервер WooCommerce
     const { $wooco } = useNuxtApp();
+    await $wooco.post("/orders", orderData);
 
-    const response = $wooco.post("/orders", orderData);
-
-    // Очищаем корзину
     carts.value = [];
     toast("Заказ успешно отправлен");
   } catch (error) {
@@ -139,8 +196,9 @@ const submitOrder = async () => {
     alert("Произошла ошибка при создании заказа.");
   } finally {
     setTimeout(() => {
+      loading.value = false; // Отключаем лоадер после завершения
       router.push("/");
-    }, 1000);
+    }, 600);
   }
 };
 </script>
@@ -246,5 +304,11 @@ const submitOrder = async () => {
     font-size: 2.5rem;
     cursor: pointer;
   }
+}
+
+.error {
+  color: red;
+  font-size: 1.2rem;
+  margin-top: -2rem;
 }
 </style>
