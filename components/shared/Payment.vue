@@ -205,10 +205,12 @@ const submitOrder = async () => {
   loading.value = true; // Устанавливаем лоадер
 
   try {
-    // Устанавливаем статус заказа в зависимости от метода оплаты
-    let orderStatus = "pending"; // Для оплаты при получении используем статус "в ожидании"
-    if (paymentData.value.paymentMethod === "на сайте") {
-      orderStatus = "processing"; // Если оплата на сайте, устанавливаем статус "обрабатывается"
+    // Устанавливаем статус заказа в зависимости от метода оплаты и доставки
+    let orderStatus = "pending"; // По умолчанию статус "в ожидании"
+
+    // Если выбрана "Оплата при получении", переводим заказ в "Обрабатывается"
+    if (paymentData.value.paymentMethod === "при получении") {
+      orderStatus = "processing"; // Устанавливаем статус "Обрабатывается"
     }
 
     // Собираем данные для заказа и отправляем на сервер
@@ -229,7 +231,7 @@ const submitOrder = async () => {
         address_1: paymentData.value.address,
       },
 
-      status: orderStatus, // Добавляем статус заказа
+      status: orderStatus, // Устанавливаем статус заказа
 
       line_items: carts.value.map((item: any) => ({
         product_id: item.id,
